@@ -7,13 +7,13 @@ Theoretically, multiple boards (up to 8) could be connected with different addre
 
 ### Installation: 
 - sudo pip3 install cbpi4-PCF8574-GPIO
-- or install from repo: sudo pip3 install https://github.com/avollkopf/cbpi4-PCF8574-GPIO/archive/main.zip
+- or install from repo: sudo pip3 install https://github.com/PiBrewing/cbpi4-PCF8574-GPIO/archive/main.zip
 	
 ### Usage:
 
 - Configure the PCF8574 I2C Address in the cbpi global settings. 
 
-![PCF8574 I2C address Settings](https://github.com/avollkopf/cbpi4-PCF8574-GPIO/blob/main/PCF8574_Address_Settings.png?raw=true)
+![PCF8574 I2C address Settings](https://github.com/PiBrewing/cbpi4-PCF8574-GPIO/blob/main/PCF8574_Address_Settings.png?raw=true)
 
 - Add an actor under Hardware/Actor and select PCF8574Actor
 - Select the pin you want to switch (p0 to p7)
