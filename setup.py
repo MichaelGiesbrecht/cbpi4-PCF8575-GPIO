@@ -7,12 +7,13 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(name='cbpi4-PCF8574-GPIO',
-      version='0.0.5',
+      version='0.0.6.a1',
       description='CraftBeerPi4 PCF8574 Actor Plugin',
       author='Alexander Vollkopf',
       author_email='avollkopf@web.de',
-      url='https://github.com/avollkopf/cbpi4-PCF8574-GPIO',
+      url='https://github.com/PiBrewing/cbpi4-PCF8574-GPIO',
       include_package_data=True,
+      keywords='globalsettings',
       package_data={
         # If any package contains *.txt or *.rst files, include them:
       '': ['*.txt', '*.rst', '*.yaml'],
