@@ -51,15 +51,43 @@ class PCF8574(CBPiExtension):
 
     async def PCF8574_Address(self): 
         global PCF8574_address
+        plugin = await self.cbpi.plugin.load_plugin_list("cbpi4-PCF8574-GPIO")
+        self.version=plugin[0].get("Version","0.0.0")
+        self.name=plugin[0].get("Name","cbpi4-PCF8574-GPIO")
+
+        self.PCF8574_update = self.cbpi.config.get(self.name+"_update", None)
+
+
         PCF8574_Address = self.cbpi.config.get("PCF8574_Address", None)
         if PCF8574_Address is None:
             logger.info("INIT PCF8574_Address")
             try:
-                await self.cbpi.config.add('PCF8574_Address', '0x20', ConfigType.STRING, 'PCF8574 I2C Bus address (e.g. 0x20). Change requires reboot')
+                await self.cbpi.config.add('PCF8574_Address', '0x20', type=ConfigType.STRING, 
+                                           description='PCF8574 I2C Bus address (e.g. 0x20). Change requires reboot',
+                                           source=self.name)
                 PCF8574_Address = self.cbpi.config.get("PCF8574_Address", None)
-            except:
-                logger.warning('Unable to update database')
-
+            except Exception as e:
+                    logger.warning('Unable to update config')
+                    logger.warning(e)
+        else:
+            if self.PCF8574_update == None or self.PCF8574_update != self.version:
+                try:
+                    await self.cbpi.config.add('PCF8574_Address', PCF8574_Address, type=ConfigType.STRING, 
+                                           description='PCF8574 I2C Bus address (e.g. 0x20). Change requires reboot',
+                                           source=self.name)
+                except Exception as e:
+                    logger.warning('Unable to update config')
+                    logger.warning(e)
+                    
+        if self.PCF8574_update == None or self.PCF8574_update != self.version:
+            try:
+                await self.cbpi.config.add(self.name+"_update", self.version, type=ConfigType.STRING,
+                                           description="PCF8574 Plugin Version",
+                                           source='hidden')
+            except Exception as e:
+                logger.warning('Unable to update config')
+                logger.warning(e)
+            pass                
 
 @parameters([Property.Select(label="GPIO", options=["p0","p1","p2","p3","p4","p5","p6","p7"]),
              Property.Select(label="Inverted", options=["Yes", "No"],description="No: Active on high; Yes: Active on low"),

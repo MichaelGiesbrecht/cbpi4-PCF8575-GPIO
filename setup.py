@@ -13,6 +13,7 @@ setup(name='cbpi4-PCF8574-GPIO',
       author_email='avollkopf@web.de',
       url='https://github.com/PiBrewing/cbpi4-PCF8574-GPIO',
       include_package_data=True,
+      keywords='globalsettings',
       package_data={
         # If any package contains *.txt or *.rst files, include them:
       '': ['*.txt', '*.rst', '*.yaml'],
@@ -20,7 +21,8 @@ setup(name='cbpi4-PCF8574-GPIO',
       packages=['cbpi4-PCF8574-GPIO'],
       install_requires=[
       'smbus2',
-      'pcf8574-io'
+      'pcf8574-io',
+      'cbpi4>=4.1.10.rc2'
       ],
       long_description=long_description,
       long_description_content_type='text/markdown'
