@@ -6,7 +6,7 @@ import logging
 from unittest.mock import MagicMock, patch
 import asyncio
 import random
-import pcf8574_io 
+import pcf8575 
 from cbpi.api import *
 from cbpi.api.config import ConfigType
 from cbpi.api.dataclasses import Props
@@ -21,7 +21,7 @@ def PCFActor(address):
     logger.info("***************** Start PCF Actor on I2C address {} ************************".format(hex(address)))
     try:
         # create to object with the defined address
-        p1 = pcf8574_io.PCF(address)
+        p1 = pcf8575.PCF(address)
         # All pins are set to input at start -> set them to output and low
         for pin in pins:
             p1.pin_mode(pin,"OUTPUT")
@@ -36,53 +36,53 @@ def PCFActor(address):
 
 # check if PCF address parameter is included in settings. Add it to settings if it not already included.
 # call PCFActor function once at startup to create the PCF Actor object
-class PCF8574(CBPiExtension):
+class PCF8575(CBPiExtension):
 
     def __init__(self,cbpi):
         self.cbpi = cbpi
         self._task = asyncio.create_task(self.init_actor())
 
     async def init_actor(self):
-        await self.PCF8574_Address()
+        await self.PCF8575_Address()
         logger.info("Checked PCF Address")
-        PCF8574_Address = self.cbpi.config.get("PCF8574_Address", "0x20")
-        address=int(PCF8574_Address,16)
+        PCF8575_Address = self.cbpi.config.get("PCF8575_Address", "0x20")
+        address=int(PCF8575_Address,16)
         PCFActor(address)
 
-    async def PCF8574_Address(self): 
-        global PCF8574_address
-        plugin = await self.cbpi.plugin.load_plugin_list("cbpi4-PCF8574-GPIO")
+    async def PCF8575_Address(self): 
+        global PCF8575_address
+        plugin = await self.cbpi.plugin.load_plugin_list("cbpi4-PCF8575-GPIO")
         self.version=plugin[0].get("Version","0.0.0")
-        self.name=plugin[0].get("Name","cbpi4-PCF8574-GPIO")
+        self.name=plugin[0].get("Name","cbpi4-PCF8575-GPIO")
 
-        self.PCF8574_update = self.cbpi.config.get(self.name+"_update", None)
+        self.PCF8575_update = self.cbpi.config.get(self.name+"_update", None)
 
 
-        PCF8574_Address = self.cbpi.config.get("PCF8574_Address", None)
-        if PCF8574_Address is None:
-            logger.info("INIT PCF8574_Address")
+        PCF8575_Address = self.cbpi.config.get("PCF8575_Address", None)
+        if PCF8575_Address is None:
+            logger.info("INIT PCF8575_Address")
             try:
-                await self.cbpi.config.add('PCF8574_Address', '0x20', type=ConfigType.STRING, 
-                                           description='PCF8574 I2C Bus address (e.g. 0x20). Change requires reboot',
+                await self.cbpi.config.add('PCF8575_Address', '0x20', type=ConfigType.STRING, 
+                                           description='PCF8575 I2C Bus address (e.g. 0x20). Change requires reboot',
                                            source=self.name)
-                PCF8574_Address = self.cbpi.config.get("PCF8574_Address", None)
+                PCF8575_Address = self.cbpi.config.get("PCF8575_Address", None)
             except Exception as e:
                     logger.warning('Unable to update config')
                     logger.warning(e)
         else:
-            if self.PCF8574_update == None or self.PCF8574_update != self.version:
+            if self.PCF8574_update == None or self.PCF8575_update != self.version:
                 try:
-                    await self.cbpi.config.add('PCF8574_Address', PCF8574_Address, type=ConfigType.STRING, 
-                                           description='PCF8574 I2C Bus address (e.g. 0x20). Change requires reboot',
+                    await self.cbpi.config.add('PCF8575_Address', PCF8575_Address, type=ConfigType.STRING, 
+                                           description='PCF8575 I2C Bus address (e.g. 0x20). Change requires reboot',
                                            source=self.name)
                 except Exception as e:
                     logger.warning('Unable to update config')
                     logger.warning(e)
                     
-        if self.PCF8574_update == None or self.PCF8574_update != self.version:
+        if self.PCF8575_update == None or self.PCF8575_update != self.version:
             try:
                 await self.cbpi.config.add(self.name+"_update", self.version, type=ConfigType.STRING,
-                                           description="PCF8574 Plugin Version",
+                                           description="PCF8575 Plugin Version",
                                            source='hidden')
             except Exception as e:
                 logger.warning('Unable to update config')
@@ -92,7 +92,7 @@ class PCF8574(CBPiExtension):
 @parameters([Property.Select(label="GPIO", options=["p0","p1","p2","p3","p4","p5","p6","p7"]),
              Property.Select(label="Inverted", options=["Yes", "No"],description="No: Active on high; Yes: Active on low"),
              Property.Select(label="SamplingTime", options=[2,5],description="Time in seconds for power base interval (Default:5)")])
-class PCF8574Actor(CBPiActor):
+class PCF8575Actor(CBPiActor):
     # Custom property which can be configured by the user
     @action("Set Power", parameters=[Property.Number(label="Power", configurable=True,description="Power Setting [0-100]")])
     async def setpower(self,Power = 100 ,**kwargs):
@@ -156,6 +156,6 @@ class PCF8574Actor(CBPiActor):
         pass
 
 def setup(cbpi):
-    cbpi.plugin.register("PCF8574Actor", PCF8574Actor)
-    cbpi.plugin.register("PCF8574_Config",PCF8574)
+    cbpi.plugin.register("PCF8575Actor", PCF8575Actor)
+    cbpi.plugin.register("PCF8575_Config",PCF8575)
     pass

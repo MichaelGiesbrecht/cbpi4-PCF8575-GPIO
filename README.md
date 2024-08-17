@@ -1,22 +1,22 @@
-# CraftBeerPi4 PCF8574 IO Actor Plugin 
+# CraftBeerPi4 PCF8575 IO Actor Plugin 
 
-### PCF8574 based Actor
+### PCF8575 based Actor
 
-Plugin will add an PCF8574Actor which has to possibility to define up 8 additional actors to your pi. The board needs to be connected via I2C
-Theoretically, multiple boards (up to 8) could be connected with different addresses to make up to 64 IO ports available. However, the pulgin supports one board.
+Plugin is a modified version of the PCF8574 plugin that will add an PCF8575Actor which has to possibility to define up 16 additional actors to your pi. The board needs to be connected via I2C
+Theoretically, multiple boards (up to 8) could be connected with different addresses to make up to 128 IO ports available. However, the pulgin currently supports one board.
 
 ### Installation: 
-- sudo pip3 install cbpi4-PCF8574-GPIO
-- or install from repo: sudo pip3 install https://github.com/PiBrewing/cbpi4-PCF8574-GPIO/archive/main.zip
+- sudo pip3 install cbpi4-PCF8575-GPIO
+- or install from repo: sudo pip3 install https://github.com/MichaelGiesbrecht/cbpi4-PCF8575-GPIO/archive/refs/heads/main.zip
 	
 ### Usage:
 
-- Configure the PCF8574 I2C Address in the cbpi global settings. 
+- Configure the PCF8575 I2C Address in the cbpi global settings. 
 
 ![PCF8574 I2C address Settings](https://github.com/PiBrewing/cbpi4-PCF8574-GPIO/blob/main/PCF8574_Address_Settings.png?raw=true)
 
-- Add an actor under Hardware/Actor and select PCF8574Actor
-- Select the pin you want to switch (p0 to p7)
+- Add an actor under Hardware/Actor and select PCF8575Actor
+- Select the pin you want to switch (p0 to p15)
 - Select 2 or 5 seconds for the Samplingtime (Will define the 'Resolution' for Power settings)
 - Select Inverted yes or no. No means, that the pin will be on high if the sensor is active
 
@@ -28,11 +28,4 @@ According to the datasheet, the pins can handle up to 25 mA. If you want to trig
 
 ### Changelog:
 
-- 10.06.23: (0.0.6) bump version to release
-- 02.06.23: (0.0.6.rc1) Added cbpi4 version requirement
-- 07.04.23: (0.0.6.a1) Added fucntions for plugins settings selection branches of server and ui
-- 11.05.22: (0.0.5) Updated README (removed cbpi add)
-- 10.05.22: (0.0.4) Removed cbpi dependency
-- 10.12.21: (0.0.3) Updated README
-- 09.12.21: (0.0.2) Bug Fix for power
-- 09-12-21: (0.0.1) Initial release
+- 08-17-24: (0.0.1) Initial release for testing
