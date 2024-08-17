@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 # creates the PCF_IO object only during startup. All sensors are using the same object
 def PCFActor(address):
     global p1
-    pins=["p0","p1","p2","p3","p4","p5","p6","p7"]
+    pins=["p0","p1","p2","p3","p4","p5","p6","p7","p8","p9","p10","p11","p12","p13","p14","p15"]
     logger.info("***************** Start PCF Actor on I2C address {} ************************".format(hex(address)))
     try:
         # create to object with the defined address
@@ -30,7 +30,7 @@ def PCFActor(address):
         pass
     except:
         p1 = None
-        logging.info("Error. Could not activate PCF8574 on I2C address {}".format(address))
+        logging.info("Error. Could not activate PCF8575 on I2C address {}".format(address))
         pass
 
 
@@ -89,7 +89,7 @@ class PCF8575(CBPiExtension):
                 logger.warning(e)
             pass                
 
-@parameters([Property.Select(label="GPIO", options=["p0","p1","p2","p3","p4","p5","p6","p7"]),
+@parameters([Property.Select(label="GPIO", options=["p0","p1","p2","p3","p4","p5","p6","p7","p8","p9","p10","p11","p12","p13","p14","p15"]),
              Property.Select(label="Inverted", options=["Yes", "No"],description="No: Active on high; Yes: Active on low"),
              Property.Select(label="SamplingTime", options=[2,5],description="Time in seconds for power base interval (Default:5)")])
 class PCF8575Actor(CBPiActor):
