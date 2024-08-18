@@ -21,7 +21,7 @@ setup(name='cbpi4-PCF8575-GPIO',
       packages=['cbpi4-PCF8575-GPIO'],
       install_requires=[
       'smbus2',
-      'pcf8575',
+      'pcf8574_io',
       'cbpi4>=4.1.10.rc2'
       ],
       long_description=long_description,
