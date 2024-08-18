@@ -6,7 +6,7 @@ import logging
 from unittest.mock import MagicMock, patch
 import asyncio
 import random
-import pcf8575_io 
+from cbpi4-PCF8575-GPIO import pcf8575_io 
 from cbpi.api import *
 from cbpi.api.config import ConfigType
 from cbpi.api.dataclasses import Props
