@@ -6,7 +6,7 @@ import logging
 from unittest.mock import MagicMock, patch
 import asyncio
 import random
-import pcf8574_io 
+import pcf8575_io 
 from cbpi.api import *
 from cbpi.api.config import ConfigType
 from cbpi.api.dataclasses import Props
@@ -21,7 +21,7 @@ def PCFActor(address):
     logger.info("***************** Start PCF Actor on I2C address {} ************************".format(hex(address)))
     try:
         # create to object with the defined address
-        p1 = pcf8574_io.PCF(address)
+        p1 = pcf8575_io.PCF(address)
         # All pins are set to input at start -> set them to output and low
         for pin in pins:
             p1.pin_mode(pin,"OUTPUT")
