@@ -6,7 +6,7 @@ import logging
 from unittest.mock import MagicMock, patch
 import asyncio
 import random
-import pcf8575 
+import pcf8574_io 
 from cbpi.api import *
 from cbpi.api.config import ConfigType
 from cbpi.api.dataclasses import Props
@@ -21,7 +21,7 @@ def PCFActor(address):
     logger.info("***************** Start PCF Actor on I2C address {} ************************".format(hex(address)))
     try:
         # create to object with the defined address
-        p1 = pcf8575.PCF(address)
+        p1 = pcf8574_io.PCF(address)
         # All pins are set to input at start -> set them to output and low
         for pin in pins:
             p1.pin_mode(pin,"OUTPUT")
@@ -70,7 +70,7 @@ class PCF8575(CBPiExtension):
                     logger.warning('Unable to update config')
                     logger.warning(e)
         else:
-            if self.PCF8574_update == None or self.PCF8575_update != self.version:
+            if self.PCF8575_update == None or self.PCF8575_update != self.version:
                 try:
                     await self.cbpi.config.add('PCF8575_Address', PCF8575_Address, type=ConfigType.STRING, 
                                            description='PCF8575 I2C Bus address (e.g. 0x20). Change requires reboot',
