@@ -22,7 +22,7 @@ def PCFActor(address):
     logger.info("***************** Start PCF Actor on I2C address {} ************************".format(hex(address)))
     try:
         # create to object with the defined address
-        p1 = pcf8575_io.PCF(address)
+        p1 = PCF(address)
         # All pins are set to input at start -> set them to output and low
         for pin in pins:
             p1.pin_mode(pin,"OUTPUT")
@@ -170,16 +170,16 @@ class PCF:
         self.status = True
         self.pinModeFlag = 0x00
         self.smBusNum = 1
-        PCF85.setup(address, self.smBusNum, self.status)
+        PCF85setup(address, self.smBusNum, self.status)
 
     def pin_mode(self, PinName, Mode):
-        self.pinModeFlag = PCF85.pin_mode(PinName, Mode, self.pinModeFlag)
+        self.pinModeFlag = PCF85pin_mode(PinName, Mode, self.pinModeFlag)
 
     def read(self, PinName):
-        return PCF85.digitalRead(PinName, self.smBusNum, self.address)
+        return PCF85digitalRead(PinName, self.smBusNum, self.address)
 
     def write(self, PinName, Val):
-        PCF85.digitalWrite(PinName, Val, self.address, self.pinModeFlag, self.smBusNum)
+        PCF85digitalWrite(PinName, Val, self.address, self.pinModeFlag, self.smBusNum)
 
     def set_i2cBus(self, port):
         self.smBusNum = port
@@ -188,16 +188,16 @@ class PCF:
         return self.smBusNum
     
     def get_pin_mode(self, PinName):
-        return PCF85.get_pin_mode(PinName,self.pinModeFlag)
+        return PCF85get_pin_mode(PinName,self.pinModeFlag)
         
     def is_pin_output(self, PinName):
-        return PCF85.is_pin_output(PinName,self.pinModeFlag)
+        return PCF85is_pin_output(PinName,self.pinModeFlag)
     
     def get_all_mode(self):
-        return PCF85.get_all_mode(self.pinModeFlag)
+        return PCF85get_all_mode(self.pinModeFlag)
 
 
-def setup(PCFAdd, smBus, status):
+def PCF85setup(PCFAdd, smBus, status):
     if status:
         with SMBus(smBus) as bus:
             bus.write_byte(PCFAdd, 0xFF)
@@ -206,7 +206,7 @@ def setup(PCFAdd, smBus, status):
             bus.write_byte(PCFAdd, 0x00)
 
 
-def pin_mode(pinName, mode, flg):
+def PCF85pin_mode(pinName, mode, flg):
     pn = pinNameToNum(pinName)
     return set_mode(pinName, mode, int(math.pow(2, pn)), flg)
     
@@ -224,7 +224,7 @@ def set_mode(pinName, mode, rValue, flg):
         return flg
 
 
-def digitalRead(pinName, smbs, addr):
+def PCF85digitalRead(pinName, smbs, addr):
     with SMBus(smbs) as bus:
         b = bus.read_byte(addr)
     if isKthBitSet(b, pinNameToNum(pinName) + 1):
@@ -251,7 +251,7 @@ def isKthBitSet(n, k):
         return False
 
 
-def digitalWrite(pinName, val, addr, flg, smbs):
+def PCF85digitalWrite(pinName, val, addr, flg, smbs):
     if isKthBitSet(flg, pinNameToNum(pinName) + 1):
         if "HIGH" in val.strip():
             write_data(pinNameToNum(pinName), 1, smbs, flg, addr)
@@ -276,18 +276,18 @@ def write_data(pnNum, val, smbs, flg, addr):
             with SMBus(smbs) as bus:
                 bus.write_byte(addr, wr)
 
-def get_pin_mode(pinName,flg):
+def PCF85get_pin_mode(pinName,flg):
     pn = pinNameToNum(pinName)
     if isKthBitSet(flg,pn+1):
         return "OUTPUT"
     else:
         return "INPUT"
 
-def is_pin_output(pinName,flg):
+def PCF85is_pin_output(pinName,flg):
     pn = pinNameToNum(pinName)
     return isKthBitSet(flg,pn+1)
 
-def get_all_mode(flg):
+def PCF85get_all_mode(flg):
     mlist = []
     for i in range(0,8):
         if isKthBitSet(flg,i+1):
