@@ -8,7 +8,6 @@ import asyncio
 import random
 from smbus2 import SMBus
 import math
-import PCF85
 from cbpi.api import *
 from cbpi.api.config import ConfigType
 from cbpi.api.dataclasses import Props
