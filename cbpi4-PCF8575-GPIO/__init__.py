@@ -113,17 +113,17 @@ class PCF8575Actor(CBPiActor):
     async def on_start(self):
         self.power = None
         self.inverted = True if self.props.get("Inverted", "No") == "Yes" else False
-        self.p1off = "LOW" if self.inverted == False else "HIGH"
-        self.p1on  = "HIGH" if self.inverted == False else "LOW"
+        self.p1off = False if self.inverted == False else True
+        self.p1on  = True if self.inverted == False else False
         self.gpio = self.props.get("GPIO", "0")
         self.sampleTime = int(self.props.get("SamplingTime", 5))
         #p1.pin_mode(self.gpio,"OUTPUT")
         """ p1.write(self.gpio, self.p1off)
         self.state = False """
-        i2c_port_num = 1
+        # i2c_port_num = 1
         pcf_address = 0x20
-        pcf = PCF8575(i2c_port_num,pcf_address)
-        pcf.port[self.gpio] = True
+        pcf = PCF8575(1,pcf_address)
+        pcf.port[self.gpio] = False
 
     async def on(self, power = None):
         if power is not None:
@@ -136,24 +136,24 @@ class PCF8575Actor(CBPiActor):
         """ p1.write(self.gpio, self.p1on)
         self.state = True """
         
-        i2c_port_num = 1
+        # i2c_port_num = 1
         pcf_address = 0x20
-        pcf = PCF8575(i2c_port_num,pcf_address)
+        pcf = PCF8575(1,pcf_address)
         pcf.port[self.gpio] = True
 
     async def off(self):
         logger.info("ACTOR %s OFF - GPIO %s " % (self.id, self.gpio))
         """ p1.write(self.gpio, self.p1off)
         self.state = False """
-        i2c_port_num = 1
+        # i2c_port_num = 1
         pcf_address = 0x20
-        pcf = PCF8575(i2c_port_num,pcf_address)
+        pcf = PCF8575(1,pcf_address)
         pcf.port[self.gpio] = True
 
     def get_state(self):
-        i2c_port_num = 1
+        # i2c_port_num = 1
         pcf_address = 0x20
-        pcf = PCF8575(i2c_port_num,pcf_address)
+        pcf = PCF8575(1,pcf_address)
         return pcf.port[self.gpio]
 
     async def run(self):
