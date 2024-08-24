@@ -8,6 +8,8 @@ import asyncio
 import random
 from smbus2 import SMBus
 import math
+import time
+from pcf8575 import PCF8575
 from cbpi.api import *
 from cbpi.api.config import ConfigType
 from cbpi.api.dataclasses import Props
@@ -18,7 +20,47 @@ logger = logging.getLogger(__name__)
 # creates the PCF_IO object only during startup. All sensors are using the same object
 def PCFActor(address):
     global p1
-    pins=["p0","p1","p2","p3","p4","p5","p6","p7","p8","p9","p10","p11","p12","p13","p14","p15"]
+    i2c_port_num = 1
+    pcf_address = 0x20
+    pcf = PCF8575(i2c_port_num,pcf_address)
+
+    pcf.port[0] = True
+    time.sleep(2)
+    pcf.port[1] = True
+    time.sleep(2)
+    pcf.port[2] = True
+    time.sleep(2)
+    pcf.port[3] = True
+    time.sleep(2)
+    pcf.port[4] = True
+    time.sleep(2)
+    pcf.port[5] = True
+    time.sleep(2)
+    pcf.port[6] = True
+    time.sleep(2)
+    pcf.port[7] = True
+    time.sleep(2)
+    pcf.port[8] = True
+    time.sleep(2)
+    pcf.port[9] = True
+    time.sleep(2)
+    pcf.port[10] = True
+    time.sleep(2)
+    pcf.port[11] = True
+    time.sleep(2)
+    pcf.port[12] = True
+    time.sleep(2)
+    pcf.port[13] = True
+    time.sleep(2)
+    pcf.port[14] = True
+    time.sleep(2)
+    pcf.port[14] = True
+    time.sleep(2)
+    pcf.port[15] = True
+    time.sleep(2)
+
+
+   """  pins=["0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"]
     logger.info("***************** Start PCF Actor on I2C address {} ************************".format(hex(address)))
     try:
         # create to object with the defined address
@@ -32,7 +74,7 @@ def PCFActor(address):
     except:
         p1 = None
         logging.info("Error. Could not activate PCF8575 on I2C address {}".format(address))
-        pass
+        pass """
 
 
 # check if PCF address parameter is included in settings. Add it to settings if it not already included.
@@ -93,16 +135,17 @@ class PCF8575(CBPiExtension):
 @parameters([Property.Select(label="GPIO", options=["p0","p1","p2","p3","p4","p5","p6","p7","p8","p9","p10","p11","p12","p13","p14","p15"]),
              Property.Select(label="Inverted", options=["Yes", "No"],description="No: Active on high; Yes: Active on low"),
              Property.Select(label="SamplingTime", options=[2,5],description="Time in seconds for power base interval (Default:5)")])
+
 class PCF8575Actor(CBPiActor):
     # Custom property which can be configured by the user
-    @action("Set Power", parameters=[Property.Number(label="Power", configurable=True,description="Power Setting [0-100]")])
+    """ @action("Set Power", parameters=[Property.Number(label="Power", configurable=True,description="Power Setting [0-100]")])
     async def setpower(self,Power = 100 ,**kwargs):
         self.power=int(Power)
         if self.power < 0:
             self.power = 0
         if self.power > 100:
             self.power = 100           
-        await self.set_power(self.power)      
+        await self.set_power(self.power) """      
 
     async def on_start(self):
         self.power = None
@@ -160,138 +203,3 @@ def setup(cbpi):
     cbpi.plugin.register("PCF8575Actor", PCF8575Actor)
     cbpi.plugin.register("PCF8575_Config",PCF8575)
     pass
-
-
-
-class PCF:
-
-    def __init__(self, address):
-        self.address = address
-        self.status = True
-        self.pinModeFlag = 0x00
-        self.smBusNum = 1
-        PCF85setup(address, self.smBusNum, self.status)
-
-    def pin_mode(self, PinName, Mode):
-        self.pinModeFlag = PCF85pin_mode(PinName, Mode, self.pinModeFlag)
-
-    def read(self, PinName):
-        return PCF85digitalRead(PinName, self.smBusNum, self.address)
-
-    def write(self, PinName, Val):
-        PCF85digitalWrite(PinName, Val, self.address, self.pinModeFlag, self.smBusNum)
-
-    def set_i2cBus(self, port):
-        self.smBusNum = port
-    
-    def get_i2cBus(self):
-        return self.smBusNum
-    
-    def get_pin_mode(self, PinName):
-        return PCF85get_pin_mode(PinName,self.pinModeFlag)
-        
-    def is_pin_output(self, PinName):
-        return PCF85is_pin_output(PinName,self.pinModeFlag)
-    
-    def get_all_mode(self):
-        return PCF85get_all_mode(self.pinModeFlag)
-
-
-def PCF85setup(PCFAdd, smBus, status):
-    if status:
-        with SMBus(smBus) as bus:
-            bus.write_byte(PCFAdd, 0xFF)
-    elif not status:
-        with SMBus(smBus) as bus:
-            bus.write_byte(PCFAdd, 0x00)
-
-
-def PCF85pin_mode(pinName, mode, flg):
-    pn = pinNameToNum(pinName)
-    return set_mode(pinName, mode, int(math.pow(2, pn)), flg)
-    
-
-
-def set_mode(pinName, mode, rValue, flg):
-    pn = pinNameToNum(pinName)
-    if "INPUT" in mode.strip() and isKthBitSet(flg, pn + 1):
-        flg = flg - rValue
-        return flg
-    elif "OUTPUT" in mode.strip() and not isKthBitSet(flg, pn + 1):
-        flg = flg + rValue
-        return flg
-    else:
-        return flg
-
-
-def PCF85digitalRead(pinName, smbs, addr):
-    with SMBus(smbs) as bus:
-        b = bus.read_byte(addr)
-    if isKthBitSet(b, pinNameToNum(pinName) + 1):
-        return True
-    else:
-        return False
-
-
-def pinNameToNum(pinName):
-    try:
-        pn = int(pinName.strip().replace("p", "").strip())
-        if pn in range(16):
-            return pn
-        else:
-            print("Wrone pin name!")
-    except:
-        raise Exception("Wrone pin name!")
-
-
-def isKthBitSet(n, k):
-    if n & (1 << (k - 1)):
-        return True
-    else:
-        return False
-
-
-def PCF85digitalWrite(pinName, val, addr, flg, smbs):
-    if isKthBitSet(flg, pinNameToNum(pinName) + 1):
-        if "HIGH" in val.strip():
-            write_data(pinNameToNum(pinName), 1, smbs, flg, addr)
-        elif "LOW" in val.strip():
-            write_data(pinNameToNum(pinName), 0, smbs, flg, addr)
-        else:
-            print("Wrong pin mode for pin",pinName)
-    else:
-        print("You can't write input pin")
-
-
-def write_data(pnNum, val, smbs, flg, addr):
-    if isKthBitSet(flg, pnNum + 1):
-        with SMBus(smbs) as bus:
-            wr = bus.read_byte(addr)
-        if val == 0 and isKthBitSet(wr, pnNum + 1):
-            wr = wr - int(math.pow(2, pnNum))
-            with SMBus(smbs) as bus:
-                bus.write_byte(addr, wr)
-        elif val == 1 and not isKthBitSet(wr, pnNum + 1):
-            wr = wr + int(math.pow(2, pnNum))
-            with SMBus(smbs) as bus:
-                bus.write_byte(addr, wr)
-
-def PCF85get_pin_mode(pinName,flg):
-    pn = pinNameToNum(pinName)
-    if isKthBitSet(flg,pn+1):
-        return "OUTPUT"
-    else:
-        return "INPUT"
-
-def PCF85is_pin_output(pinName,flg):
-    pn = pinNameToNum(pinName)
-    return isKthBitSet(flg,pn+1)
-
-def PCF85get_all_mode(flg):
-    mlist = []
-    for i in range(0,8):
-        if isKthBitSet(flg,i+1):
-            mlist.append("OUTPUT")
-        else:
-            mlist.append("INPUT")
-    return mlist
