@@ -120,7 +120,7 @@ class PCF8575Actor(CBPiActor):
         self.gpio = int(self.props.get("GPIO"))
         self.sampleTime = int(self.props.get("SamplingTime", 5))
         self.address = self.props.get("Address")
-        PCF8575(1,self.address).port(self.gpio) = False
+        # PCF8575(1,self.address).port(self.gpio) = False
 
 
     async def on(self, power = None):
