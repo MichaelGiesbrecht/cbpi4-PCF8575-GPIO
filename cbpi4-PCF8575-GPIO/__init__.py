@@ -144,7 +144,7 @@ class PCF8575Actor(CBPiActor):
         self.state = False
         
     def get_state(self):
-        return PCF8575(1,self.address).port[self.gpio]
+        return self.state
         
     async def run(self):
         while self.running == True:
