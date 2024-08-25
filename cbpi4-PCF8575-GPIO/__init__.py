@@ -133,16 +133,16 @@ class PCF8575Actor(CBPiActor):
         # logger.info("ACTOR %s ON - GPIO %s " %  (self.id, self.gpio))
         # """ p1.write(self.gpio, self.p1on)
         # self.state = True """
-        PCF8575(1,self.address).port(self.gpio) = True
+        PCF8575(1,self.address).port[self.gpio] = True
 
     async def off(self):
         # logger.info("ACTOR %s OFF - GPIO %s " % (self.id, self.gpio))
         # """ p1.write(self.gpio, self.p1off)
         # self.state = False """
-        PCF8575(1,self.address).port(self.gpio) = False
+        PCF8575(1,self.address).port[self.gpio] = False
         
     def get_state(self):
-        return PCF8575(1,self.address).port(self.gpio)
+        return PCF8575(1,self.address).port[self.gpio]
         
     async def run(self):
         while self.running == True:
