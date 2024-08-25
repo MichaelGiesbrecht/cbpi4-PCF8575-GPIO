@@ -119,7 +119,8 @@ class PCF8575Actor(CBPiActor):
         # self.p1on  = True if self.inverted == False else False
         self.gpio = int(self.props.get("GPIO"))
         # self.sampleTime = int(self.props.get("SamplingTime", 5))
-        self.address = int(self.props.get("Address"),16)
+        pcf_address = self.props.get("Address")
+        self.address = int(pcf_address,16)
         # PCF8575(1,self.address).port(self.gpio) = False
         self.state = False
         # self.address = 0x20
