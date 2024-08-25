@@ -118,7 +118,7 @@ class PCF8575Actor(CBPiActor):
         # self.p1off = False if self.inverted == False else True
         # self.p1on  = True if self.inverted == False else False
         self.gpio = int(self.props.get("GPIO"))
-        self.sampleTime = int(self.props.get("SamplingTime", 5))
+        # self.sampleTime = int(self.props.get("SamplingTime", 5))
         self.address = self.props.get("Address")
         # PCF8575(1,self.address).port(self.gpio) = False
 
@@ -130,13 +130,13 @@ class PCF8575Actor(CBPiActor):
         #     self.power = 100
         # await self.set_power(self.power)
 
-        logger.info("ACTOR %s ON - GPIO %s " %  (self.id, self.gpio))
+        # logger.info("ACTOR %s ON - GPIO %s " %  (self.id, self.gpio))
         # """ p1.write(self.gpio, self.p1on)
         # self.state = True """
         PCF8575(1,self.address).port(self.gpio) = True
 
     async def off(self):
-        logger.info("ACTOR %s OFF - GPIO %s " % (self.id, self.gpio))
+        # logger.info("ACTOR %s OFF - GPIO %s " % (self.id, self.gpio))
         # """ p1.write(self.gpio, self.p1off)
         # self.state = False """
         PCF8575(1,self.address).port(self.gpio) = False
