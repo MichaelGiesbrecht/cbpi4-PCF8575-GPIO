@@ -122,6 +122,7 @@ class PCF8575Actor(CBPiActor):
         self.address = self.props.get("Address")
         # PCF8575(1,self.address).port(self.gpio) = False
         self.state = False
+        self.address = 0x20
 
     async def on(self, power = None):
         # if power is not None:
