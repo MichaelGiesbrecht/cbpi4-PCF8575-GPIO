@@ -95,7 +95,7 @@ logger = logging.getLogger(__name__)
     #             logger.warning(e)
     #         pass                
 
-@parameters([Property.Select(label="Address", options=[0x20], description = "I2C Address"),
+@parameters([Property.Select(label="Address", options=["0x20"], description = "I2C Address"),
              Property.Select(label="GPIO", options=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15], description = "Output Pin")
             #  Property.Select(label="Inverted", options=["Yes", "No"],description="No: Active on high; Yes: Active on low"),
             #  Property.Select(label="SamplingTime", options=[2,5],description="Time in seconds for power base interval (Default:5)")])
@@ -119,10 +119,10 @@ class PCF8575Actor(CBPiActor):
         # self.p1on  = True if self.inverted == False else False
         self.gpio = int(self.props.get("GPIO"))
         # self.sampleTime = int(self.props.get("SamplingTime", 5))
-        self.address = self.props.get("Address")
+        self.address = int(self.props.get("Address"),16)
         # PCF8575(1,self.address).port(self.gpio) = False
         self.state = False
-        self.address = 0x20
+        # self.address = 0x20
 
     async def on(self, power = None):
         # if power is not None:
