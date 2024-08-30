@@ -113,11 +113,17 @@ class PCF8575Actor(CBPiActor):
     #     await self.set_power(self.power)      
 
     async def on_start(self):
+        # global p1
         self.power = None
         self.inverted = True if self.props.get("Inverted", "No") == "Yes" else False
-        self.p1off = False if self.inverted == False else True
-        self.p1on  = True if self.inverted == False else False
-
+        # self.p1off = False if self.inverted == False else True
+        # self.p1on  = True if self.inverted == False else False
+        if self.inverted:
+            self.p1on = False
+            self.p1off = True
+        else:
+            self.p1on = True
+            self.p1off = False
         self.gpio = int(self.props.get("GPIO"))
         # self.sampleTime = int(self.props.get("SamplingTime", 5))
         pcf_address = self.props.get("Address")
