@@ -9,7 +9,7 @@ import random
 from smbus2 import SMBus
 import math
 import time
-import smbus
+# import smbus
 # from pcf8575 import PCF8575
 from cbpi.api import *
 from cbpi.api.config import ConfigType
@@ -232,7 +232,7 @@ class PCF8575(object):
     """
     def __init__(self, i2c_bus_no, address):
         self.bus_no = i2c_bus_no
-        self.bus = smbus.SMBus(i2c_bus_no)
+        self.bus = SMBus.SMBus(i2c_bus_no)
         self.address = address
 
     def __repr__(self):
@@ -265,11 +265,10 @@ class PCF8575(object):
 
         assert output_number in range(16), "Output number must be an integer between 0 and 15"
         current_state = self.bus.read_word_data(self.address, 0)
+        current_state1 = current_state << 8
         bit = 1 << 15-output_number
         new_state = current_state | bit if value else current_state & (~bit & 0xff)
-        self.bus.write_byte_data(self.address, new_state & 0xff, (new_state >> 8) & 0xff)
-        # logger.info("Current State " %  (current_state))
-        # logger.info("New State " % (new_state))
+        self.bus.write_byte_data(self.address, new_state & 0xff, current_state1)
 
     def get_pin_state(self, pin_number):
         """
