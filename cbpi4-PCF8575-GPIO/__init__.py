@@ -266,7 +266,7 @@ class PCF8575(object):
         bit = 1 << 15-output_number
         new_state = current_state | bit if value else current_state & (~bit & 0xff)
         # self.bus.write_byte_data(self.address, new_state & 0xff, (new_state >> 8) & 0xff)
-        self.bus.write_byte_data(self.address, new_state, new_state)
+        self.bus.write_byte_data(self.address, new_state, new_state & 0x00)
 
     def get_pin_state(self, pin_number):
         """
