@@ -96,32 +96,33 @@ logger = logging.getLogger(__name__)
     #         pass                
 
 @parameters([Property.Select(label="Address", options=["0x20"], description = "I2C Address"),
-             Property.Select(label="GPIO", options=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15], description = "Output Pin")
-            #  Property.Select(label="Inverted", options=["Yes", "No"],description="No: Active on high; Yes: Active on low"),
-            #  Property.Select(label="SamplingTime", options=[2,5],description="Time in seconds for power base interval (Default:5)")])
+             Property.Select(label="GPIO", options=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15], description = "Output Number"),
+            Property.Select(label="Inverted", options=["Yes", "No"],description="No: Active on high; Yes: Active on low"),
+            # Property.Select(label="SamplingTime", options=[2,5],description="Time in seconds for power base interval (Default:5)")])
             ])
 
 class PCF8575Actor(CBPiActor):
     # Custom property which can be configured by the user
-    @action("Set Power", parameters=[Property.Number(label="Power", configurable=True,description="Power Setting [0-100]")])
-    async def setpower(self,Power = 100 ,**kwargs):
-        self.power=int(Power)
-        if self.power < 0:
-            self.power = 0
-        if self.power > 100:
-            self.power = 100           
-        await self.set_power(self.power)      
+    # @action("Set Power", parameters=[Property.Number(label="Power", configurable=True,description="Power Setting [0-100]")])
+    # async def setpower(self,Power = 100 ,**kwargs):
+    #     self.power=int(Power)
+    #     if self.power < 0:
+    #         self.power = 0
+    #     if self.power > 100:
+    #         self.power = 100           
+    #     await self.set_power(self.power)      
 
     async def on_start(self):
         self.power = None
-        # self.inverted = True if self.props.get("Inverted", "No") == "Yes" else False
-        # self.p1off = False if self.inverted == False else True
-        # self.p1on  = True if self.inverted == False else False
+        self.inverted = True if self.props.get("Inverted", "No") == "Yes" else False
+        self.p1off = False if self.inverted == False else True
+        self.p1on  = True if self.inverted == False else False
+
         self.gpio = int(self.props.get("GPIO"))
         # self.sampleTime = int(self.props.get("SamplingTime", 5))
         pcf_address = self.props.get("Address")
         self.address = int(pcf_address,16)
-        # PCF8575(1,self.address).port(self.gpio) = False
+        PCF8575(1,self.address).port(self.gpio) = self.p1off
         self.state = False
         # self.address = 0x20
 
@@ -133,16 +134,12 @@ class PCF8575Actor(CBPiActor):
         # await self.set_power(self.power)
 
         # logger.info("ACTOR %s ON - GPIO %s " %  (self.id, self.gpio))
-        # """ p1.write(self.gpio, self.p1on)
-        # self.state = True """
-        PCF8575(1,self.address).port[self.gpio] = False
+        PCF8575(1,self.address).port[self.gpio] = self.p1on
         self.state = True
 
     async def off(self):
         # logger.info("ACTOR %s OFF - GPIO %s " % (self.id, self.gpio))
-        # """ p1.write(self.gpio, self.p1off)
-        # self.state = False """
-        PCF8575(1,self.address).port[self.gpio] = True
+        PCF8575(1,self.address).port[self.gpio] = self.p1off
         self.state = False
         
     def get_state(self):
