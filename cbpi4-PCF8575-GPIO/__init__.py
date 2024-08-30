@@ -142,14 +142,14 @@ class PCF8575Actor(CBPiActor):
         # logger.info("ACTOR %s ON - GPIO %s " %  (self.id, self.gpio))
         # PCF8575(1,self.address).port[self.gpio] = self.p1on
         # PCF8575(1,self.address).set_output(self.gpio,self.p1on)
-        PCF8575(1,self.address).set_output(self.gpio,self.p1on,self.inverted)
+        PCF8575(1,self.address).set_output(self.gpio,self.p1on)
         self.state = True
 
     async def off(self):
         # logger.info("ACTOR %s OFF - GPIO %s " % (self.id, self.gpio))
         # PCF8575(1,self.address).port[self.gpio] = self.p1off
         # PCF8575(1,self.address).set_output(self.gpio,self.p1off)
-        PCF8575(1,self.address).set_output(self.gpio,self.p1off,self.inverted)
+        PCF8575(1,self.address).set_output(self.gpio,self.p1off)
         self.state = False
         
     def get_state(self):
@@ -256,19 +256,17 @@ class PCF8575(object):
                 new_state |= 1 << 15-i
         self.bus.write_byte_data(self.address, new_state & 0xff, (new_state >> 8) & 0xff)
 
-    def set_output(self, output_number, value, inverted):
+    def set_output(self, output_number, value):
         """
         Set a specific output high (True) or low (False).
         """
-        if inverted:
-            value = False
-        else:
-            value = True
+
         assert output_number in range(16), "Output number must be an integer between 0 and 15"
         current_state = self.bus.read_word_data(self.address, 0)
         bit = 1 << 15-output_number
         new_state = current_state | bit if value else current_state & (~bit & 0xff)
-        self.bus.write_byte_data(self.address, new_state & 0xff, (new_state >> 8) & 0xff)
+        # self.bus.write_byte_data(self.address, new_state & 0xff, (new_state >> 8) & 0xff)
+        self.bus.write_byte_data(self.address, new_state, new_state)
 
     def get_pin_state(self, pin_number):
         """
