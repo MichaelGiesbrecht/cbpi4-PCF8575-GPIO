@@ -9,6 +9,7 @@ import random
 from smbus2 import SMBus
 import math
 import time
+import smbus
 # from pcf8575 import PCF8575
 from cbpi.api import *
 from cbpi.api.config import ConfigType
