@@ -143,8 +143,7 @@ class PCF8575Actor(CBPiActor):
         # PCF8575(1,self.address).port[self.gpio] = self.p1on
         # PCF8575(1,self.address).set_output(self.gpio,self.p1on)
         
-        # PCF8575(1,self.address).set_output(self.gpio,self.p1on)
-        PCF8575(1,self.address).port(self.p1on)
+        PCF8575(1,self.address).set_output(self.gpio,self.p1on)
         self.state = True
 
     async def off(self):
@@ -152,8 +151,7 @@ class PCF8575Actor(CBPiActor):
         # PCF8575(1,self.address).port[self.gpio] = self.p1off
         # PCF8575(1,self.address).set_output(self.gpio,self.p1off)
         
-        # PCF8575(1,self.address).set_output(self.gpio,self.p1off)
-        PCF8575(1,self.address).port(self.p1off)
+        PCF8575(1,self.address).set_output(self.gpio,self.p1off)
         self.state = False
         
     def get_state(self):
@@ -270,8 +268,8 @@ class PCF8575(object):
         bit = 1 << 15-output_number
         new_state = current_state | bit if value else current_state & (~bit & 0xff)
         self.bus.write_byte_data(self.address, new_state & 0xff, (new_state >> 8) & 0xff)
-        logger.info("Current State " %  (current_state))
-        logger.info("New State " % (new_state))
+        # logger.info("Current State " %  (current_state))
+        # logger.info("New State " % (new_state))
 
     def get_pin_state(self, pin_number):
         """
