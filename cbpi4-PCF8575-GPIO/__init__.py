@@ -127,7 +127,7 @@ class PCF8575Actor(CBPiActor):
         pcf_address = self.props.get("Address")
         self.address = int(pcf_address,16)
         # PCF8575(1,self.address).port[self.gpio] = self.p1off
-        PCF8575(1,self.address).port(self.p1off)
+        PCF8575(1,self.address).port = [self.p1off,self.p1off,self.p1off,self.p1off,self.p1off,self.p1off,self.p1off,self.p1off,self.p1off,self.p1off,self.p1off,self.p1off,self.p1off,self.p1off,self.p1off,self.p1off]
         self.state = False
 
 
