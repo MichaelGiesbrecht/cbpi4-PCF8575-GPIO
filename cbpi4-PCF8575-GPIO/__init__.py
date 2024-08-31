@@ -6,7 +6,8 @@ import logging
 from unittest.mock import MagicMock, patch
 import asyncio
 import random
-from smbus2 import SMBus
+# from smbus2 import SMBus
+import smbus2
 import math
 import time
 # import smbus
@@ -250,7 +251,7 @@ class PCF8575(object):
         """
         Set the whole port using a list.
         """
-        assert isinstance(value, list)
+        assert isinstself.bus.write_byte_data(self.address, new_state & 0xff, (new_state >> 8) & 0xff)ance(value, list)
         assert len(value) == 16
         new_state = 0
         for i, val in enumerate(value):
