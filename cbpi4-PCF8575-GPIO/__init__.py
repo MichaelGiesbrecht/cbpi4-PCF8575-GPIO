@@ -274,8 +274,7 @@ class PCF8575(object):
     def set_output2(self, output_number, value):
         current_state = self.bus.read_word_data(self.address, 0)
         new_state = PCF8575.toggleBit(current_state,output_number)
-        hex_array = PCF8575.bytes_to_hex_array(new_state)
-        self.bus.write_byte_data(self.address, hex_array[0],hex_array[1])
+        self.bus.write_word_data(self.address, new_state)
 
     def bytes_to_hex_array(byte_data):
         return [byte_data[i:i+1].hex() for i in range(len(byte_data))]
