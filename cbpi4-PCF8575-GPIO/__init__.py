@@ -265,10 +265,10 @@ class PCF8575(object):
 
         assert output_number in range(16), "Output number must be an integer between 0 and 15"
         current_state = self.bus.read_word_data(self.address, 0)
-        current_state1 = current_state << 8
         bit = 1 << 15-output_number
         new_state = current_state | bit if value else current_state & (~bit & 0xff)
-        self.bus.write_byte_data(self.address, new_state & 0xff, current_state1)
+        # self.bus.write_byte_data(self.address, new_state & 0xff, (new_state >> 8) & 0xff)
+        self.bus.write_byte_data(self.address, 0x00, 0x00)
 
     def get_pin_state(self, pin_number):
         """
