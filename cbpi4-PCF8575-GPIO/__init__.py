@@ -251,7 +251,7 @@ class PCF8575(object):
         """
         Set the whole port using a list.
         """
-        assert isinstself.bus.write_byte_data(self.address, new_state & 0xff, (new_state >> 8) & 0xff)ance(value, list)
+        assert isinstance(value, list)
         assert len(value) == 16
         new_state = 0
         for i, val in enumerate(value):
