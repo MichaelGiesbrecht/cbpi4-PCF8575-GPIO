@@ -144,7 +144,7 @@ class PCF8575Actor(CBPiActor):
         # PCF8575(1,self.address).port[self.gpio] = self.p1on
         # PCF8575(1,self.address).set_output(self.gpio,self.p1on)
         
-        PCF8575(1,self.address).set_output(self.gpio,self.p1on)
+        PCF8575(1,self.address).set_output2(self.gpio,self.p1on)
         self.state = True
 
     async def off(self):
@@ -152,7 +152,7 @@ class PCF8575Actor(CBPiActor):
         # PCF8575(1,self.address).port[self.gpio] = self.p1off
         # PCF8575(1,self.address).set_output(self.gpio,self.p1off)
         
-        PCF8575(1,self.address).set_output(self.gpio,self.p1off)
+        PCF8575(1,self.address).set_output2(self.gpio,self.p1off)
         self.state = False
         
     def get_state(self):
@@ -270,6 +270,19 @@ class PCF8575(object):
         new_state = current_state | bit if value else current_state & (~bit & 0xff)
         # self.bus.write_byte_data(self.address, new_state & 0xff, (new_state >> 8) & 0xff)
         self.bus.write_byte_data(self.address, 0x00, 0xff)
+
+    def set_output2(self, output_number, value):
+        current_state = self.bus.read_word_data(self.address, 0)
+        new_state = PCF8575.toggleBit(int(current_state,16),output_number)
+        hex_array = PCF8575.bytes_to_hex_array(new_state)
+        self.bus.write_byte_data(self.address, hex_array[0],hex_array[1])
+
+    def bytes_to_hex_array(byte_data):
+        return [byte_data[i:i+1].hex() for i in range(len(byte_data))]
+    
+    def toggleBit(int_type, offset):
+        mask = 1 << offset
+        return(int_type ^ mask)
 
     def get_pin_state(self, pin_number):
         """
