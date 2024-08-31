@@ -128,6 +128,7 @@ class PCF8575Actor(CBPiActor):
         # self.sampleTime = int(self.props.get("SamplingTime", 5))
         pcf_address = self.props.get("Address")
         self.address = int(pcf_address,16)
+        PCF8575.InitOutputs()
         # PCF8575(1,self.address).port[self.gpio] = self.p1off
         # PCF8575(1,self.address).port = [self.p1off,self.p1off,self.p1off,self.p1off,self.p1off,self.p1off,self.p1off,self.p1off,self.p1off,self.p1off,self.p1off,self.p1off,self.p1off,self.p1off,self.p1off,self.p1off]
         self.state = False
@@ -275,6 +276,9 @@ class PCF8575(object):
         current_state = self.bus.read_word_data(self.address, 0)
         new_state = PCF8575.toggleBit(current_state,output_number)
         self.bus.write_word_data(self.address, 0, new_state)
+    
+    def InitOutputs(self):
+        self.bus.write_byte_data(self.address,0xff, 0xff)
 
     def bytes_to_hex_array(byte_data):
         return [byte_data[i:i+1].hex() for i in range(len(byte_data))]
