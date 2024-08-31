@@ -233,7 +233,7 @@ class PCF8575(object):
     """
     def __init__(self, i2c_bus_no, address):
         self.bus_no = i2c_bus_no
-        self.bus = SMBus.SMBus(i2c_bus_no)
+        self.bus = smbus2.SMBus(i2c_bus_no)
         self.address = address
 
     def __repr__(self):
